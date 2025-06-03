@@ -1,12 +1,14 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/VerConsultasPaciente.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/VerConsultasPaciente.css";
 
 function VerConsultasPaciente() {
   const [consultas, setConsultas] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [novaData, setNovaData] = useState('');
+  const [filtroProcedimento, setFiltroProcedimento] = useState('');
+  const [filtroProfissional, setFiltroProfissional] = useState('');
+  const [filtroData, setFiltroData] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +16,6 @@ function VerConsultasPaciente() {
     setConsultas(consultasSalvas);
   }, []);
 
-  // Cancelar consulta
   const cancelarConsulta = (index) => {
     const novasConsultas = [...consultas];
     novasConsultas.splice(index, 1);
@@ -22,16 +23,13 @@ function VerConsultasPaciente() {
     localStorage.setItem('consultas', JSON.stringify(novasConsultas));
   };
 
-  // Iniciar remarcação
   const iniciarRemarcacao = (index) => {
     setEditIndex(index);
     setNovaData(consultas[index].data);
   };
 
-  // Confirmar remarcação
   const confirmarRemarcacao = () => {
     if (novaData.trim() === '') return;
-
     const novasConsultas = [...consultas];
     novasConsultas[editIndex].data = novaData;
     setConsultas(novasConsultas);
@@ -40,107 +38,116 @@ function VerConsultasPaciente() {
     setNovaData('');
   };
 
-  return (
-    <div className="ver-consultas-container">
-      <div className="sidebar">
-        <div className="sidebar-icons">
-          <img
-            src="assets/imagens/home.webp"
-            alt="home"
-            onClick={() => navigate('/home-paciente')}
-            style={{ cursor: 'pointer' }}
-          />
-          <img src="assets/imagens/consultas.jpg" alt="consultas" />
-        </div>
-      </div>
+  // 🔍 Filtrar as consultas
+  const consultasFiltradas = consultas.filter((consulta) => {
+    return (
+      (filtroProcedimento === '' || consulta.procedimento.toLowerCase().includes(filtroProcedimento.toLowerCase())) &&
+      (filtroProfissional === '' || consulta.profissional.toLowerCase().includes(filtroProfissional.toLowerCase())) &&
+      (filtroData === '' || consulta.data === filtroData)
+    );
+  });
 
-      <div className="conteudo">
-        <div className="header">
-          <h1>Visage Élégant</h1>
-          <img src="assets/imagens/hibisco.png" alt="hibisco" className="hibisco" />
-        </div>
+  return React.createElement("div", { className: "ver-consultas-container" },
 
-        <div className="consultas">
-          <h2>Minhas Consultas</h2>
-
-          {consultas.length === 0 ? (
-            <div className="sem-consultas">
-              <p>Você ainda não possui consultas agendadas.</p>
-            </div>
-          ) : (
-            <div className="consultas-lista">
-              {consultas.map((consulta, index) => (
-                <div className="consulta-card" key={index}>
-                  <div className="consulta-info">
-                    <h3>{consulta.procedimento}</h3>
-                    <p>Paciente: {consulta.nome}</p>
-                    <p>Profissional: {consulta.profissional}</p>
-                    <p>Data: {consulta.data}</p>
-                  </div>
-
-                  <div className="consulta-botoes">
-                    {editIndex === index ? (
-                      <>
-                        <input
-                          type="date"
-                          value={novaData}
-                          onChange={(e) => setNovaData(e.target.value)}
-                        />
-                        <button onClick={confirmarRemarcacao}>Salvar</button>
-                        <button onClick={() => setEditIndex(null)}>Cancelar</button>
-                      </>
-                    ) : (
-                      <>
-                        <button className="btn-remarcar" onClick={() => iniciarRemarcacao(index)}>
-                          Remarcar
-                        </button>
-                        <button
-                          className="btn-cancelar"
-                          onClick={() => cancelarConsulta(index)}
-                        >
-                          Cancelar
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-=======
-import React from "react";
-
-const VerConsultasPaciente = () => {
-  return React.createElement("div", { className: "container" },
-    React.createElement("header", { className: "header" },
-      React.createElement("img", { src: "/assets/imagens/hibisco.png", alt: "Logo", className: "logo" }),
-      React.createElement("h1", null, "Visage Élégant")
+    // Sidebar
+    React.createElement("div", { className: "sidebar" },
+      React.createElement("div", { className: "sidebar-icons" },
+        React.createElement("img", {
+          src: "assets/imagens/home.webp",
+          alt: "home",
+          style: { cursor: "pointer" },
+          onClick: () => navigate("/home-paciente")
+        }),
+        React.createElement("img", {
+          src: "assets/imagens/consultas.jpg",
+          alt: "consultas"
+        })
+      )
     ),
-    React.createElement("nav", { className: "menu" },
-      React.createElement("img", { src: "/assets/imagens/home.webp", alt: "Home", className: "icon" }),
-      React.createElement("img", { src: "/assets/imagens/consultas.jpg", alt: "Consultas", className: "icon" })
-    ),
-    React.createElement("main", { className: "consultas" },
-      React.createElement("h2", null, "Minhas Consultas"),
-      createConsultaCard("Preenchimento Facial", "Ana", "10/01/2025"),
-      createConsultaCard("Botox", "Ana", "10/01/2025")
-    )
-  );
-};
 
-function createConsultaCard(procedimento, profissional, data) {
-  return React.createElement("div", { className: "consulta-card" },
-    React.createElement("h3", null, procedimento),
-    React.createElement("p", null, `Profissional: ${profissional}`),
-    React.createElement("p", null, `Data: ${data}`),
-    React.createElement("div", { className: "buttons" },
-      React.createElement("button", null, "Remarcar"),
-      React.createElement("button", null, "Cancelar")
+    // Conteúdo
+    React.createElement("div", { className: "conteudo" },
+
+      // Header
+      React.createElement("div", { className: "header" },
+        React.createElement("h1", null, "Visage Élégant"),
+        React.createElement("img", {
+          src: "assets/imagens/hibisco.png",
+          alt: "hibisco",
+          className: "hibisco"
+        })
+      ),
+
+      // Consultas
+      React.createElement("div", { className: "consultas" },
+        React.createElement("h2", null, "Minhas Consultas"),
+
+        // 🔍 Filtros
+        React.createElement("div", { className: "filtros" },
+          React.createElement("input", {
+            type: "text",
+            placeholder: "Filtrar por Procedimento",
+            value: filtroProcedimento,
+            onChange: (e) => setFiltroProcedimento(e.target.value)
+          }),
+          React.createElement("input", {
+            type: "text",
+            placeholder: "Filtrar por Profissional",
+            value: filtroProfissional,
+            onChange: (e) => setFiltroProfissional(e.target.value)
+          }),
+          React.createElement("input", {
+            type: "date",
+            value: filtroData,
+            onChange: (e) => setFiltroData(e.target.value)
+          })
+        ),
+
+        // Sem consultas
+        consultasFiltradas.length === 0
+          ? React.createElement("div", { className: "sem-consultas" },
+              React.createElement("p", null, "Nenhuma consulta encontrada.")
+            )
+
+        // Lista de consultas
+          : React.createElement("div", { className: "consultas-lista" },
+              consultasFiltradas.map((consulta, index) =>
+                React.createElement("div", { className: "consulta-card", key: index },
+                  // Info
+                  React.createElement("div", { className: "consulta-info" },
+                    React.createElement("h3", null, consulta.procedimento),
+                    React.createElement("p", null, `Paciente: ${consulta.nome}`),
+                    React.createElement("p", null, `Profissional: ${consulta.profissional}`),
+                    React.createElement("p", null, `Data: ${consulta.data}`)
+                  ),
+                  // Botões
+                  React.createElement("div", { className: "consulta-botoes" },
+                    editIndex === index
+                      ? React.createElement(React.Fragment, null,
+                          React.createElement("input", {
+                            type: "date",
+                            value: novaData,
+                            onChange: (e) => setNovaData(e.target.value)
+                          }),
+                          React.createElement("button", { onClick: confirmarRemarcacao }, "Salvar"),
+                          React.createElement("button", { onClick: () => setEditIndex(null) }, "Cancelar")
+                        )
+                      : React.createElement(React.Fragment, null,
+                          React.createElement("button", {
+                            className: "btn-remarcar",
+                            onClick: () => iniciarRemarcacao(index)
+                          }, "Remarcar"),
+                          React.createElement("button", {
+                            className: "btn-cancelar",
+                            onClick: () => cancelarConsulta(index)
+                          }, "Cancelar")
+                        )
+                  )
+                )
+              )
+            )
+      )
     )
->>>>>>> 5059ea3eafc8570527216fd6788f03a44a742471
   );
 }
 

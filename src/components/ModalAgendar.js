@@ -5,7 +5,9 @@ function ModalAgendar({ procedimento, onClose, onConfirm }) {
   const [especialidade, setEspecialidade] = useState('');
   const [profissional, setProfissional] = useState('');
   const [nome, setNome] = useState('');
+  const [telefone, setTelefone] = useState('');
   const [data, setData] = useState('');
+  const [observacoes, setObservacoes] = useState('');
 
   const handleAgendar = () => {
     const dados = {
@@ -13,18 +15,17 @@ function ModalAgendar({ procedimento, onClose, onConfirm }) {
       especialidade,
       profissional,
       nome,
+      telefone,
       data,
+      observacoes,
     };
 
-    // ✅ Salvando no localStorage
     const consultasAntigas = JSON.parse(localStorage.getItem('consultas')) || [];
     const novasConsultas = [...consultasAntigas, dados];
     localStorage.setItem('consultas', JSON.stringify(novasConsultas));
 
-    // ✅ Executando callback se necessário
     if (onConfirm) onConfirm(dados);
 
-    // ✅ Fechando o modal
     onClose();
   };
 
@@ -74,6 +75,16 @@ function ModalAgendar({ procedimento, onClose, onConfirm }) {
         </div>
 
         <div className="form-group">
+          <label>Telefone:</label>
+          <input
+            type="tel"
+            placeholder="(00) 00000-0000"
+            value={telefone}
+            onChange={(e) => setTelefone(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
           <label>Data da Consulta:</label>
           <div className="input-com-icone">
             <input
@@ -84,10 +95,19 @@ function ModalAgendar({ procedimento, onClose, onConfirm }) {
           </div>
         </div>
 
+        <div className="form-group">
+          <label>Observações:</label>
+          <textarea
+            placeholder="Ex: Quero que seja no período da manhã"
+            value={observacoes}
+            onChange={(e) => setObservacoes(e.target.value)}
+          />
+        </div>
+
         <button
           className="btn-agendar"
           onClick={handleAgendar}
-          disabled={!especialidade || !profissional || !nome || !data}
+          disabled={!especialidade || !profissional || !nome || !telefone || !data}
         >
           Agendar
         </button>

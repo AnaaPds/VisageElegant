@@ -5,6 +5,38 @@ import '../styles/HomeProfissional.css';
 function HomeProfissional() {
   const navigate = useNavigate();
 
+  const gerarRelatorio = () => {
+    const idProfissional = localStorage.getItem('idProfissional');
+
+    if (!idProfissional) {
+      alert('ID do profissional não encontrado. Faça login novamente.');
+      return;
+    }
+
+    fetch(`http://localhost:8080/relatorios/profissional/${idProfissional}`, {
+      method: 'GET',
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao gerar o relatório');
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `relatorio_profissional_${idProfissional}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao gerar o relatório');
+      });
+  };
+
   return (
     <div className="home-profissional-container">
       <div className="sidebar">
@@ -29,7 +61,7 @@ function HomeProfissional() {
             <img src="assets/imagens/calendario.webp" alt="Consultas" />
             <p>Consultas</p>
           </div>
-          <div className="botao">
+          <div className="botao" onClick={gerarRelatorio}>
             <img src="assets/imagens/relatorio.png" alt="Relatório" />
             <p>Relatório</p>
           </div>

@@ -158,3 +158,27 @@
     background-color: #c43f7b;
   }
   
+
+  .filtros {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .filtros input {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 195px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+  }
+  
+  .filtros input:focus {
+    border-color: #e88ea2;
+    outline: none;
+  }
+  
